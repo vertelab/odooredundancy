@@ -1,0 +1,63 @@
+#!/bin/bash
+################################################################################
+#   Sync projects from a remote Odoo installation.
+#
+#
+################################################################################
+
+## Test if conf exist so we don't garble stuff
+if [ -f /etc/odoo/ma-redundancy-sync.conf ];
+then
+  source /etc/odoo/ma-redundancy-sync.conf
+else
+  echo "Configuration /etc/odoo/ma-redundancy-sync.conf not found"
+  exit -1
+fi
+if [ ! $SYNCMODE = "on" ]; then
+  echo "Sync mode not set to 'on'" 1>&2
+  exit -1
+fi
+
+## -------------------------------------------------------------------------- ##
+
+SRC_PROJECTS=$(ssh $REMOTEODOO@$SYNCSRC ls /usr/share | grep odoo | grep -v core-odoo)
+LOC_PROJECTS=$(ls /usr/share | grep odoo | grep -v core-odoo)
+
+# Check if we got a list of projects
+if [ "$SRC_PROJECTS" = "" ]
+then
+    # TODO: No projects is a valid state
+    echo "No Odoo-projects found on source. Exiting ..." 1>&2
+    exit 1
+fi
+
+# Check if any projects are to be removed
+for p in $LOC_PROJECTS
+do
+	DEL_PROJECT=1
+	for sp in $SRC_PROJECTS
+		do
+			if [ "$sp" = "$p" ]
+				then
+					DEL_PROJECT=0
+			fi
+		done
+			if [ "$DEL_PROJECT" -eq 1 ]
+		then
+			rm -rf /usr/share/$p
+		fi
+done
+
+# Sync projects
+for p in $SRC_PROJECTS
+do
+	rsync -var --delete --filter="-, p *.pyc" $REMOTEODOO@$SYNCSRC:/usr/share/$p /usr/share
+	chown odoo:odoo /usr/share/$p -R
+	chmod g+w /usr/share/$p -R;
+done
+
+#service odoo restart  # No restart Odoo disabled since it can't connect
+                            # to a RO db.
+## End
+ma-write-summary $0
+exit 0

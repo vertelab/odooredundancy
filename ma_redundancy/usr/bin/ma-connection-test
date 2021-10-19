@@ -1,0 +1,53 @@
+#!/bin/bash
+################################################################################
+#   Test connections required for sync
+################################################################################
+
+## Test if conf exist so we don't garble stuff
+if [ -f /etc/odoo/ma-redundancy-sync.conf ];
+then
+  source /etc/odoo/ma-redundancy-sync.conf
+else
+  echo "Configuration /etc/odoo/ma-redundancy-sync.conf not found" 1>&2
+  exit -1
+fi
+if [ ! $SYNCMODE = "on" ]; then
+  echo "Sync mode not set to 'on'" 1>&2
+  exit -1
+fi
+
+useage(){
+    echo "Usage: sudo ma-connection-test"
+    echo "The user running the program need to be root as the sync-scripts are intended to be run as root."
+}
+
+## -------------------------------------------------------------------------- ##
+# Colors for prettier print
+U='\033[0;0m'
+R='\033[0;31m'
+Y='\033[1;33m'
+G='\033[0;32m'
+B='\033[0;34m'
+## -------------------------------------------------------------------------- ##
+
+echo "Testing connection to source: $SYNCSRC"
+if ! $(ping -c 1 -W 5 $SYNCSRC > /dev/null); then
+    echo -e "${R}Error:${U} Failure to ping $SYNCSRC" 1>&2
+    useage >$2
+    exit 1
+else
+    echo -e "${G}Success${U}"
+fi
+
+echo "Attempting to login to $SYNCSRC as $REMOTEODOO (publickey only)"
+if ! $(ssh $REMOTEODOO@$SYNCSRC -o 'BatchMode yes' -o 'ConnectTimeout 5' exit); then
+    echo -e "${R}Error:${U} connect to $SYNCSRC as $REMOTEODOO" 1>&2
+    useage 1>&2
+    exit 1
+else
+    echo -e "${G}Success${U}"
+fi
+
+## -------------------------------------------------------------------------- ##
+ma-write-summary $0
+exit 0

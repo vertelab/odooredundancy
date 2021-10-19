@@ -1,0 +1,54 @@
+#!/bin/bash
+################################################################################
+#                                                                              #
+#   Install manually installed packages on remote REMOTE on this system if     #
+#   not already present.                                                       #
+#                                                                              #
+################################################################################
+
+## Test if conf exist so we don't garble stuff
+if [ -f /etc/odoo/ma-redundancy-sync.conf ];
+then
+  source /etc/odoo/ma-redundancy-sync.conf
+else
+  echo "Configuration /etc/odoo/ma-redundancy-sync.conf not found"
+  exit -1
+fi
+if [ ! $SYNCMODE = "on" ]; then
+  echo "Sync mode not set to 'on'" 1>&2
+  exit -1
+fi
+
+## -------------------------------------------------------------------------- ##
+
+synopsis (){
+  echo "Install manually installed packages on remote on this system if not already present."
+}
+usage(){
+  echo "Usage: sudo $0 [REMOTE]"
+}
+
+## -------------------------------------------------------------------------- ##
+if [ $UID -ne 0 ]; then
+    echo "Need to be run as root." 1>&2
+    usage
+    exit 1
+fi
+## -------------------------------------------------------------------------- ##
+
+TMP=$(mktemp)
+comm -13 <(sort <(apt-mark showmanual)) <(ssh $REMOTEODOO@$SYNCSRC 'apt-mark showmanual' | sort) > $TMP
+
+
+echo "## -------------------------------------------------------------------------- ##"
+echo "REMOVE THE SAFETY REMARK IN SOURCE BELOW"
+echo "Would have installed:"
+cat "$TMP"
+# apt -y install $(cat $TMP) # TODO: Activate me before leaving script in the wild.
+echo "## -------------------------------------------------------------------------- ##"
+
+
+# Cleanup and exit
+rm $TMP
+ma-write-summary $0
+exit 0

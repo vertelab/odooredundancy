@@ -1,0 +1,30 @@
+#!/bin/bash
+################################################################################
+#                                                                              #
+#   Sync odoo conf files from source                                           #
+#                                                                              #
+################################################################################
+
+## Test if conf exist so we don't garble stuff
+if [ -f /etc/odoo/ma-redundancy-sync.conf ];
+then
+  source /etc/odoo/ma-redundancy-sync.conf
+else
+  echo "Configuration /etc/odoo/ma-redundancy-sync.conf not found"
+  exit -1
+fi
+if [ ! $SYNCMODE = "on" ]; then
+  echo "Sync mode not set to 'on'" 1>&2
+  exit -1
+fi
+
+## -------------------------------------------------------------------------- ##
+
+cp /etc/odoo/odoo.conf /etc/odoo/odoo.conf.previous
+rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/odoo/odoo.conf /etc/odoo/odoo.conf
+
+# TODO: nginx
+
+#
+ma-write-summary $0
+exit 0

@@ -1,0 +1,7 @@
+Package: testdebsimple
+Version: 0.1
+Architecture: amd64
+Maintainer: Simon Rundstedt <simon.rundstedt@gmail.com>
+Description: A small simple test package
+ This is a simple test of making a small deb-package as an excercise testing the
+ packaging procedure.

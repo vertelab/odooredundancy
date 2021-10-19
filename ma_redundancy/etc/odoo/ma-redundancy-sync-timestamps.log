@@ -1,0 +1,5 @@
+# Summary of when different command ran with return code 0
+ma-attachments-sync: never
+ma-apt-sync: never
+ma-conf-sync: never
+ma-project-sync: never
