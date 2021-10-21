@@ -5,7 +5,7 @@
 #
 ################################################################################
 
-ma-sync-from-source # Get everything once a month just in case.
+ot-sync-from-source # Get everything once a month just in case.
 
 ## End
 exit 0 # 0 = success

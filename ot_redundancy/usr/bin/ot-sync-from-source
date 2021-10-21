@@ -13,7 +13,7 @@ B='\033[0;34m'
 echo "DB-sync is made via WAL files and is excluded from this message"
 
 echo "Syncing installed apt packages ..."
-ma-apt-sync
+ot-apt-sync
 if [ $? -eq 0 ]; then
     echo -e "${G}Success"
 else
@@ -21,7 +21,7 @@ else
 fi
 
 echo "Syncing project code ..."
-ma-project-sync
+ot-project-sync
 if [ $? -eq 0 ]; then
     echo -e "${G}Success"
 else
@@ -29,7 +29,7 @@ else
 fi
 
 echo "Syncing filestore ..."
-ma-attachments-sync
+ot-attachments-sync
 if [ $? -eq 0 ]; then
     echo -e "${G}Success"
 else
@@ -37,7 +37,7 @@ else
 fi
 
 echo "Syncing configuration ..."
-ma-conf-sync
+ot-conf-sync
 if [ $? -eq 0 ]; then
     echo -e "${G}Success"
 else
@@ -48,5 +48,5 @@ fi
                             # to a RO db.
 ## End
 # Todo: Make som smart return code describing what went wrong
-ma-write-summary $0
+ot-write-summary $0
 exit 0

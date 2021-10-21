@@ -9,17 +9,17 @@
 ################################################################################
 
 ## Test if conf exist so we don't garble stuff
-if [ -f /etc/odoo/ma-redundancy-sync.conf ];
+if [ -f /etc/odoo/ot-redundancy-sync.conf ];
 then
-  source /etc/odoo/ma-redundancy-sync.conf
+  source /etc/odoo/ot-redundancy-sync.conf
 else
-  echo "Configuration /etc/odoo/ma-redundancy-sync.conf not found"
+  echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found"
   exit -1
 fi
 
-if [ $SYNCMODE = "on" ]; then
-  echo "Sync mode already set to 'on'. Exiting"
-  exit 0
+if [ $SYNCMODE = "off" ]; then
+  echo "Sync mode already set to 'off'. Exiting ... "
+  exit 0 # This is not a failure.
 fi
 
 if [ $UID -ne 0 ]; then
@@ -29,10 +29,12 @@ fi
 
 ## -------------------------------------------------------------------------- ##
 
-echo "Setting standby flag to on:"
-sed -i 's|^SYNCMODE=\"off\"|SYNCMODE=\"on\"|g' /etc/odoo/ma-redundancy-sync.conf
 
-echo "Sync enabled."
+echo "Setting standby flag to off:"
+sed -i 's|^SYNCMODE=\"on\"|SYNCMODE=\"off\"|g' /etc/odoo/ot-redundancy-sync.conf
+
+echo "Sync disabled."
+echo "Note: This doesn't stop postgres from processing incoming WAL files."
 ## -------------------------------------------------------------------------- ##
-ma-write-summary $0
+ot-write-summary $0
 exit 0

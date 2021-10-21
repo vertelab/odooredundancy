@@ -12,11 +12,11 @@
 ################################################################################
 
 ## Test if conf exist so we don't garble stuff
-if [ -f /etc/odoo/ma-redundancy-sync.conf ];
+if [ -f /etc/odoo/ot-redundancy-sync.conf ];
 then
-  source /etc/odoo/ma-redundancy-sync.conf
+  source /etc/odoo/ot-redundancy-sync.conf
 else
-  echo "Configuration /etc/odoo/ma-redundancy-sync.conf not found"
+  echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found"
   exit -1
 fi
 
@@ -65,11 +65,11 @@ echo "## -----------------------------------------------------------------------
 ## -------------------------------------------------------------------------- ##
 
 echo "Removing cron jobs:"
-echo "mv /etc/cron.hourly/ma-cron-hourly /etc/odoo/"
-mv /etc/cron.hourly/ma-cron-hourly /etc/odoo/
+echo "mv /etc/cron.hourly/ot-cron-hourly /etc/odoo/"
+mv /etc/cron.hourly/ot-cron-hourly /etc/odoo/
 
 echo "Setting standby flag to off:"
-ma-disable-sync
+ot-disable-sync
 
 echo "Removing postgres standby flag:"
 echo "rm /var/lib/postgresql/12/main/standby.signal"
@@ -88,5 +88,5 @@ echo "Standby mode disabled."
 echo "Timestamps of when sync commands last ran successfully can be found in: $SUMMARYFILE"
 echo "The IP(s) of this machine is/are: $(hostname -I)"
 ## -------------------------------------------------------------------------- ##
-ma-write-summary $0
+ot-write-summary $0
 exit 0

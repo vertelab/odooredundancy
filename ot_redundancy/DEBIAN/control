@@ -1,4 +1,4 @@
-Package: ma-redundancy
+Package: ot-redundancy
 Version: 1.0-1
 Architecture: all
 Maintainer: Simon Rundstedt <simon.rundstedt@vertel.com>
