@@ -1,6 +1,6 @@
 ################################################################################
 #                                                                              #
-#   Redundancy sync scripts for Maria Åkerberg                                 #
+#   Redundancy sync scripts for an Odoo installation as applicable at Vertel   #
 #                                                                              #
 ################################################################################
 
@@ -33,7 +33,7 @@ Disable safety measures as described under notes
 Run:
     make
 or:
-    dpkg-deb --build --root-owner-group ma_redundancy deb
+    dpkg-deb --build --root-owner-group ot_redundancy deb
 
 This is a set of bash-scripts.
 
@@ -45,8 +45,8 @@ beyond the scope of this script.
 
 There are currently safety measures in place in some scripts to prevent them
 from messing up a system unintentionally:
-    1. ma-disable-standby-mode line marked 'Safety exit' should be removed
-    2. ma-apt-sync activate apt install line
+    1. ot-disable-standby-mode line marked 'Safety exit' should be removed
+    2. ot-apt-sync activate apt install line
 
 The suite has been reasonably tested and does what it says on the tin with the
 safety rows edited appropriatly. It's still unpolished though.
