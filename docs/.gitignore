@@ -1,0 +1,7 @@
+# LaTeX-related
+#  Leaving: tex and pdf
+*.gz
+*.toc
+*.out
+*.log
+*.aux
