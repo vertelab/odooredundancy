@@ -1,0 +1,55 @@
+#!/bin/bash
+################################################################################
+#                                                                              #
+#   Configure the redundancy script settings                                   #
+#                                                                              #
+################################################################################
+
+## Test if conf exist so we don't garble stuff
+if [ -f /etc/odoo/ot-redundancy-sync.conf ];
+then
+  source /etc/odoo/ot-redundancy-sync.conf
+else
+  echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found"
+  exit -1
+fi
+
+if [ $UID -ne 0 ]; then
+    echo "Program not run as root and cant continue. Exiting ..." 1>&2
+	exit 1
+fi
+
+## -------------------------------------------------------------------------- ##
+
+read -p "Set remote host [$SYNCSRC]: "
+if [ -n "$REPLY" ]; then
+    $SYNCSRC="$REPLY"
+    sed -i "s|^SYNCSRC=.*|SYNCSRC=\"$REPLY\"|g" /etc/odoo/ot-redundancy-sync.conf
+fi
+
+read -p "Set remote user [$REMOTEUSER]: "
+if [ -n "$REPLY" ]; then
+    $REMOTEUSER="$REPLY"
+    sed -i "s|^REMOTEUSER=.*|REMOTEUSER=\"$REPLY\"|g" /etc/odoo/ot-redundancy-sync.conf
+fi
+
+echo "Testing connection"
+if ! ot-connection-test; then
+    echo "Before syncing can be done make sure remote user $REMOTEUSER can login into host $SYNCSRC and have read access to Odoo files."
+    exit 1
+fi
+
+read -p "Do you wish to enable sync now? (This can be done later with ot-enable-sync) [YyNn]: "
+# Doing a regex comparison on the string:
+if [[ $REPLY =~ ^[Yy][EeSs]*$ ]]
+then
+	ot-enable-sync
+elif [[ $REPLY =~ ^[Nn][Oo]*$ ]]
+then
+	echo "Disabling sync"
+    ot-disable-sync
+fi
+
+## -------------------------------------------------------------------------- ##
+ot-write-summary $0
+exit 0
