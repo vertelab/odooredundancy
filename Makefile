@@ -6,4 +6,4 @@ all:
 	dpkg-deb --build --root-owner-group $(obj-deb) deb
 
 clean:
-	rm -R *.deb
+	rm deb/*.deb
