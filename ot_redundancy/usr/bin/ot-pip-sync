@@ -1,0 +1,57 @@
+#!/bin/bash
+################################################################################
+#                                                                              #
+#   Install python modules installed on remote REMOTE on this system if        #
+#   not already present.                                                       #
+#                                                                              #
+#   Doesn't take versions into account.                                         #
+#                                                                              #
+################################################################################
+
+## Test if conf exist so we don't garble stuff
+if [ -f /etc/odoo/ot-redundancy-sync.conf ];
+then
+  source /etc/odoo/ot-redundancy-sync.conf
+else
+  echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found"
+  exit -1
+fi
+if [ ! $SYNCMODE = "on" ]; then
+  echo "Sync mode not set to 'on'" 1>&2
+  exit -1
+fi
+
+## -------------------------------------------------------------------------- ##
+
+synopsis (){
+  echo "Install python modules installed on remote REMOTE on this system if not already present. "
+}
+usage(){
+  echo "Usage: sudo $0 [REMOTE]"
+}
+
+## -------------------------------------------------------------------------- ##
+if [ $UID -ne 0 ]; then
+    echo "Need to be run as root." 1>&2
+    usage
+    exit 1
+fi
+## -------------------------------------------------------------------------- ##
+
+TMP=$(mktemp)
+comm -13 <(sort <(pip3 list) | sed 's|\s.*||g' ) <(ssh $REMOTEODOO@$SYNCSRC 'pip3 list' | sort | sed 's|\s.*||g') > $TMP
+
+
+#echo "## -------------------------------------------------------------------------- ##"
+#echo "REMOVE THE SAFETY REMARK IN SOURCE BELOW"
+#echo "Would have installed:"
+#cat "$TMP"
+# TODO: Identify how common install prompts are. Will get stuck on prompts
+pip3 install -r $TMP # TODO: Activate me before leaving script in the wild.
+#echo "## -------------------------------------------------------------------------- ##"
+
+
+# Cleanup and exit
+rm $TMP
+ot-write-summary $0
+exit 0
