@@ -1,0 +1,7 @@
+/var/log/odoo/ot-redundancy-sync-timestamps.log {
+  rotate 12
+  monthly
+  compress
+  missingok
+  notifempty
+}

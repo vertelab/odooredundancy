@@ -17,7 +17,7 @@ fi
 
 if touch $SUMMARYFILE; then
    # continue
-   echo "Updating sync status file"
+   echo "Appending sync log file"
    else
        echo "File $SUMMARY doesn't exist or you don't have permission to write to file." 1>&2
        exit 1
@@ -25,8 +25,8 @@ fi
 
 
 usage(){
-    echo "Update $SUMMARYFILE with key : value pars where keys are input strings"
-    echo "to this command and values are timestamps on the format YYYY-MM-DD HH:mm:ss"
+    echo "Append $SUMMARYFILE with key : value pairs where values are input strings"
+    echo "to this command and keys are timestamps on the format YYYY-MM-DD HH:mm:ss"
 
 }
 
@@ -36,15 +36,16 @@ if [ ! $# -gt 0 ]; then
     exit 1
 fi
 
-for p in "$@"; do
-    if grep -E "^$p " $SUMMARYFILE; then
-    	echo "Updating row for $p"
-        sed -i "s|^$p : .*|$p : $(date '+%Y-%m-%d %H:%M:%S')|g" $SUMMARYFILE
-    else
-        echo "Adding row:"
-        echo "$p : $(date '+%Y-%m-%d %H:%M:%S')" | tee -a $SUMMARYFILE
-    fi
-done
+# for p in "$@"; do
+#     if grep -E "^$p " $SUMMARYFILE; then
+#     	echo "Updating row for $p"
+#         sed -i "s|^$p : .*|$p : $(date '+%Y-%m-%d %H:%M:%S')|g" $SUMMARYFILE
+#     else
+#         echo "Adding row:"
+#         echo "$p : $(date '+%Y-%m-%d %H:%M:%S')" | tee -a $SUMMARYFILE
+#     fi
+# done
+echo "$(date '+%Y-%m-%d %H:%M:%S') :  $p" | tee -a $SUMMARYFILE
 
 ## -------------------------------------------------------------------------- ##
 exit 0
