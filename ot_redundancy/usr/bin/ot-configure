@@ -27,23 +27,27 @@ if [ -n "$REPLY" ]; then
     sed -i "s|^SYNCSRC=.*|SYNCSRC=\"$REPLY\"|g" /etc/odoo/ot-redundancy-sync.conf
 fi
 
-read -p "Set remote user [$REMOTEUSER]: "
+read -p "Set remote user [$REMOTEODOO]: "
 if [ -n "$REPLY" ]; then
-    $REMOTEUSER="$REPLY"
-    sed -i "s|^REMOTEUSER=.*|REMOTEUSER=\"$REPLY\"|g" /etc/odoo/ot-redundancy-sync.conf
+    $REMOTEODOO="$REPLY"
+    sed -i "s|^REMOTEODOO=.*|REMOTEODOO=\"$REPLY\"|g" /etc/odoo/ot-redundancy-sync.conf
 fi
 
-echo "Testing connection"
-if ! ot-connection-test; then
-    echo "Before syncing can be done make sure remote user $REMOTEUSER can login into host $SYNCSRC and have read access to Odoo files."
-    exit 1
-fi
 
 read -p "Do you wish to enable sync now? (This can be done later with ot-enable-sync) [YyNn]: "
 # Doing a regex comparison on the string:
 if [[ $REPLY =~ ^[Yy][EeSs]*$ ]]
 then
-	ot-enable-sync
+    echo "Enabling sync"
+    ot-enable-sync
+    echo "Testing connection"
+    if ! ot-connection-test; then
+        echo "Connection test failed."
+        echo "Before syncing can be done make sure remote user $REMOTEODOO can login into host $SYNCSRC and have read access to Odoo files."
+        echo "Disabling sync"
+        ot-disable-sync
+        exit 1
+    fi
 elif [[ $REPLY =~ ^[Nn][Oo]*$ ]]
 then
 	echo "Disabling sync"
