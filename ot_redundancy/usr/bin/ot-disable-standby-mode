@@ -41,6 +41,10 @@ fi
 
 usage
 
+if ot-connection-test > /dev/null ; then
+    echo "Warning! A connection test (ping and ssh login) to the source machine ran successfully. This is not an expected use case."
+fi
+
 read -p "Are you sure you wish to continue: [YyNn]:"
 # Doing a regex comparison on the string:
 if [[ $REPLY =~ ^[Yy][EeSs]*$ ]]

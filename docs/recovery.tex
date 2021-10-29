@@ -44,7 +44,7 @@
 \label{sec:setup}
 	The standby redundancy server is meant to be as close to the production server in terms of setup and configuration to the extent reasonably possible.
 	\begin{enumerate}
-		\item Basic setup of \emph{production} and \emph{standby} machine are as possible. In the context of this manual they are expected to be setup as clones or near clones before configuration as production and standby machine make them diverge.\footnote{IE: Same disk size, same OS, same packages installed, same locations of important files.}
+		\item Basic setup of \emph{production} and \emph{standby} machine are as similar possible. In the context of this manual they are expected to be setup as clones or near clones before configuration as production and standby machine make them diverge.\footnote{IE: Same disk size, same OS, same packages installed, same locations of important files.}
 		\item Odoo and Postgresql has been installed with Odootools and no changes has been made to the default Odoo filestore or Postgresql data directories.
 		\item Postgresql database replication is already setup and Postgresql on the standby machine is in standby mode.
 		\item Odoo as a service is disabled on the standby machine.
@@ -78,12 +78,12 @@
 		\item Exhaust options to continue using the current production server.
 		\item Shut down the current production server if running. This is important since if Odoo is still running it can feasably continue with automatic tasks such as sending emails and depending on the DB replication setup it might continue archiving data. Make note of the shutdown time.\footnote{Though if it is running in a broken state, the broken state have probably already been synked to the standby machine}
 		\item (Recommended) Shut down the standby and make a backup image of it. This might help troubleshooting later if the standby machine doesn't work.
-		\item \textbf{>> On the standby machine:} Run \texttt{sudo ma-disable-standby-mode} . The command disable Postgresql's standby mode, start Odoo and the scripte suits sync commands.
-		\item Take note of the last file syncs. The file defined as \texttt{SUMMARYFILE} in the suites configuration file (\texttt{/etc/odoo/ma-redundancy-sync.conf}) contain timestamps of when the sync commands last where last run with exit code 0 (success). This will be useful in order to figure out how much data and work has been lost.
+		\item \textbf{>> On the standby machine:} Run \texttt{sudo ot-disable-standby-mode} . The command disable Postgresql's standby mode, the scripte suits sync commands, and start Odoo.
+		\item Take note of the last file syncs. The file defined as \texttt{SUMMARYFILE} in the suites configuration file (\texttt{/etc/odoo/ot-redundancy-sync.conf}) contain timestamps of when the sync commands last where last run with exit code 0 (success). This will be useful in order to figure out how much data and work has been lost.
 		\item Login into Odoo and perform a smoke test looking for any obvious errors. Especially regarding:
 		\begin{itemize}
 			\item the last updates to sale orders, inventory operations, invoices etc
-			\item any functionality using files created or updated since the last filestore sync (\texttt{ma-attachment-sync}) since it is the most likely to have some discrepancies between the DB and filestore content.
+			\item any functionality using files created or updated since the last filestore sync (\texttt{ot-attachment-sync}) since it is the most likely to have some discrepancies between the DB and filestore content.
 		\end{itemize}
 		Depending on the Odoo configuration it might difficult to login using the standby machines IP-address. 
 		\item Repoint any reverse proxies, webservers, or DNS-records to the standby machine and verify the standby server is reachable as intendended.
@@ -101,13 +101,15 @@
 		\item the delay between db and file sync has caused issues:
 		\begin{itemize}
 			\item DB and filestore out of sync.\\
-				Regenerating asset bundles might help some errors. Expect up to an hours files to be lost. Note many files are generated from DB data and the data isn't lost per se.
+				Regenerating asset bundles might help some errors. Expect up to an hours files to be lost. Note: Many files are generated from DB data and the data isn't lost per se.
 			\item Packages installed on the production server hasn't been installed on the standby.\\Packages are synced, but not  nearly as often as the DB or filestore. This highlights the need of keeping the package sync as a part of the deployment process to the production server.
 		\end{itemize}
 		\item additional services, other than Postgresql and Odoo, might need to be (re)started on the standby before they are fully operational.\\
 			This document can't cover extra services or programs installed and need to be covered as a part of a separate checklist. 
 	\end{itemize}
 
+% ^Recovery above
+\newpage
 \section{Installation and usage}
 	
 \subsection{Installation}
@@ -125,6 +127,7 @@ It is strongly recommended to setup Postgresql replication before installing the
 
 For the scripts to work \texttt{root} on the standby machine need to able to connect to the production server with a user having read access to Odoo files. By default this is the remote Odoo user \texttt{odoo} since \texttt{odootools} already enable a login shell for that user.
 
+An example of how to setup SSH-keys:
 \begin{enumerate}
 	\item (On standby) Create SSH-keys as \texttt{root}: \texttt{sudo ssh-keygen -t ed25519}
 	\item (On standby) Print public key: \texttt{sudo cat /root/.ssh/id\_ed25519.pub}

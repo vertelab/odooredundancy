@@ -40,12 +40,12 @@ TMP=$(mktemp)
 comm -13 <(sort <(apt-mark showmanual)) <(ssh $REMOTEODOO@$SYNCSRC 'apt-mark showmanual' | sort) > $TMP
 
 
-echo "## -------------------------------------------------------------------------- ##"
-echo "REMOVE THE SAFETY REMARK IN SOURCE BELOW"
-echo "Would have installed:"
-cat "$TMP"
-# apt -y install $(cat $TMP) # TODO: Activate me before leaving script in the wild.
-echo "## -------------------------------------------------------------------------- ##"
+#echo "## -------------------------------------------------------------------------- ##"
+#echo "REMOVE THE SAFETY REMARK IN SOURCE BELOW"
+#echo "Would have installed:"
+#cat "$TMP"
+apt -y install $(cat $TMP) # TODO: Activate me before leaving script in the wild.
+#echo "## -------------------------------------------------------------------------- ##"
 
 
 # Cleanup and exit
