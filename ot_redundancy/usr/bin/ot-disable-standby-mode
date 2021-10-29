@@ -65,6 +65,8 @@ fi
 echo "Removing cron jobs:"
 echo "mv /etc/cron.hourly/ot-cron-hourly /etc/odoo/"
 mv /etc/cron.hourly/ot-cron-hourly /etc/odoo/
+mv /etc/cron.monthly/ot-cron-monthly /etc/odoo/
+
 
 echo "Setting standby flag to off:"
 ot-disable-sync
