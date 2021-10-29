@@ -36,7 +36,7 @@ if [ ! $# -gt 0 ]; then
     exit 1
 fi
 
-# for p in "$@"; do
+for p in "$@"; do
 #     if grep -E "^$p " $SUMMARYFILE; then
 #     	echo "Updating row for $p"
 #         sed -i "s|^$p : .*|$p : $(date '+%Y-%m-%d %H:%M:%S')|g" $SUMMARYFILE
@@ -44,8 +44,8 @@ fi
 #         echo "Adding row:"
 #         echo "$p : $(date '+%Y-%m-%d %H:%M:%S')" | tee -a $SUMMARYFILE
 #     fi
-# done
-echo "$(date '+%Y-%m-%d %H:%M:%S') :  $p" | tee -a $SUMMARYFILE
+    echo "$(date '+%Y-%m-%d %H:%M:%S') :  $p" | tee -a $SUMMARYFILE
+done
 
 ## -------------------------------------------------------------------------- ##
 exit 0
