@@ -44,10 +44,10 @@ comm -13 <(sort <(pip3 list) | sed 's|\s.*||g' ) <(ssh $REMOTEODOO@$SYNCSRC 'pip
 
 #echo "## -------------------------------------------------------------------------- ##"
 #echo "REMOVE THE SAFETY REMARK IN SOURCE BELOW"
-#echo "Would have installed:"
-#cat "$TMP"
+echo "Installing:"
+cat "$TMP"
 # TODO: Identify how common install prompts are. Will get stuck on prompts
-pip3 install -r $TMP # TODO: Activate me before leaving script in the wild.
+pip3 install -r $TMP
 #echo "## -------------------------------------------------------------------------- ##"
 
 

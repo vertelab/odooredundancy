@@ -40,7 +40,7 @@
 	It will keep the \emph{Odoo} parts of the installation close to the state on the designated production machine as possible with the notable exception of database replication which is beyond the scope of the script.
 
 \section{Setup and limits}
-\subsection{Setup}
+\subsection{Initial setup}
 \label{sec:setup}
 	The standby redundancy server is meant to be as close to the production server in terms of setup and configuration to the extent reasonably possible.
 	\begin{enumerate}
@@ -110,10 +110,9 @@
 
 % ^Recovery above
 \newpage
-\section{Installation and usage}
+\section{Installation}
 	
-\subsection{Installation}
-\subsubsection{Prerequisites}
+\subsection{Prerequisites}
 
 See section \ref{sec:setup} for more information about the setup.
 
@@ -123,7 +122,7 @@ The scripts has as of 2021-10-21 only been tested on Odoo 14.0 but should work w
 
 It is strongly recommended to setup Postgresql replication before installing the scripts since Odoo is worthless without a DB data.
 
-\subsubsection{Preparation}
+\subsection{Preparation}
 
 For the scripts to work \texttt{root} on the standby machine need to able to connect to the production server with a user having read access to Odoo files. By default this is the remote Odoo user \texttt{odoo} since \texttt{odootools} already enable a login shell for that user.
 
@@ -143,19 +142,58 @@ An example of how to setup SSH-keys:
 	\item (On standby) Test SSH-key: \texttt{sudo ssh odoo@REMOTE-IP}
 \end{enumerate}
 
-\subsubsection{Installation}
+\subsection{Script installation}
 	If installing from source, run \texttt{make} from the source folder and a deb-file should have been generated in the deb sub folder.
 	
 	Copy the deb file to the standby server and install with:
 	\begin{verbatim}
 		adam: sudo dpkg -i ot_redundancy_XXX.deb # Replace XXX with version and architecture
 		adam: sudo ot-configure
+		adam: sudo ot-enable-sync # If not done in the configuratin script
 	\end{verbatim}
-	Run the configuration script, \texttt{ot-configure}, and answer the prompts.
+	Run the configuration script \texttt{ot-configure} as root and answer the prompts. If not done via the configuration script run \texttt{ot-enable-sync} when ready.
 	
-%\subsection{Usage}
+\section{Usage}
 
+\subsection{Commands}
+The scripts are mean to be run as root, for example with \texttt{sudo}. The available scripts can be seen in table \ref{tab:commands}.
 
+After setup there should be little need to manually commands. \texttt{ot-disable-standby-mode} is an obvious exemption. It is strongly recommended to include running \texttt{ot-sync-from-source} after each deployment of code onto the production server as some synchronizations are run infrequently.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{l | l }
+	\textbf{Command}	& \textbf{Purpose} \\ \hline
+	\texttt{ot-connection-test}	& Test if the production server is available and login-able \\
+	\texttt{ot-disable-standby-mode}	& Disable standby mode and enter production mode \\
+	\texttt{ot-configure}			& Configuration wizard \\
+	\texttt{ot-enable-sync}			& Enable sync \\
+	\texttt{ot-disable-sync}		& Disable sync \\
+	\texttt{ot-sync-from-source}	& Run all sync commands \\ \hline
+	\texttt{ot-apt-sync}			& Install manually installed apt packages present on production on standby \\
+	\texttt{ot-pip-sync}			& Install pip packages present on production on standby  \\
+	\texttt{ot-attachments-sync	}	& Copy production filestore's to standby \footnote{Made on running Odoo instance. This can cause discrepancies between the two servers if files change mid transfer.} \\
+	\texttt{ot-project-sync}		& Copy production non core projects to standby  \\
+	\texttt{ot-conf-sync}			& Copy a selection of configuration file from production to standby  \\
+	\texttt{ot-write-summary}		& Simple logging utility. Not meant for manual usage  \\ \hline
+\end{tabular}
+\caption{Provided utilities of the redundancy scripts. The top section are the primary commands a user is expected to use.}
+\label{tab:commands}
+\end{table}
+\subsection{Scheduled jobs}
+
+The package install a few scheduled jobs as normal cronjobs.
+
+\begin{itemize}
+	\item \textbf{Hourly:} The Odoo filestore is synced hourly with \texttt{ot-attachment-sync}. These are the only files that are expected to change outside deployment procedures.
+	\item \textbf{Monthly:} A full sync is run monthly with \texttt{ot-sync-from-source} just-in-case . 
+\end{itemize}
+
+\subsection{Logging}
+	
+	The command \texttt{ot-write-summary} provide a simply logging utility writing to the file defined by \texttt{SUMMARYFILE} (by default \texttt{/var/log/odoo/ot-redundancy-sync-timestamps.log}) in the main configuration file.
+	
+	\texttt{logrotate} is responsible for log rotation.
 
 %\subsection{Verifying standby integrity}
 

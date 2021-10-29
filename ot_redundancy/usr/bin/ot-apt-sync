@@ -42,9 +42,9 @@ comm -13 <(sort <(apt-mark showmanual)) <(ssh $REMOTEODOO@$SYNCSRC 'apt-mark sho
 
 #echo "## -------------------------------------------------------------------------- ##"
 #echo "REMOVE THE SAFETY REMARK IN SOURCE BELOW"
-#echo "Would have installed:"
-#cat "$TMP"
-apt -y install $(cat $TMP) # TODO: Activate me before leaving script in the wild.
+echo "Installing:"
+cat "$TMP"
+apt -y install $(cat $TMP) 
 #echo "## -------------------------------------------------------------------------- ##"
 
 

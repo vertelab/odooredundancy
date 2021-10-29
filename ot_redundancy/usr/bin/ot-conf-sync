@@ -27,9 +27,12 @@ rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/odoo/odoo.conf /etc/odoo/odoo.conf
 # TODO: Make webserver setting in conf ?
 # Nginx
 rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/nginx/sites-available /etc/nginx/sites-available
+rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/nginx/sites-available /etc/nginx/sites-enabled
 
-# Apache2
+# Apache2 - Apache is not the normal webserver
 #rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/apache2 /sites-available /etc/apache2/sites-available
+#rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/apache2 /sites-available /etc/apache2/sites-enabled
+
 
 # Syncing this folder mean both system need to very similar
 rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/apt/ /etc/apt/
