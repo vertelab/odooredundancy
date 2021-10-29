@@ -10,7 +10,7 @@ if [ -f /etc/odoo/ot-redundancy-sync.conf ];
 then
   source /etc/odoo/ot-redundancy-sync.conf
 else
-  echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found"
+  echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found" 1>&2
   exit -1
 fi
 if [ ! $SYNCMODE = "on" ]; then
@@ -20,10 +20,19 @@ fi
 
 ## -------------------------------------------------------------------------- ##
 
+# Odoo
 cp /etc/odoo/odoo.conf /etc/odoo/odoo.conf.previous
 rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/odoo/odoo.conf /etc/odoo/odoo.conf
 
-# TODO: nginx
+# TODO: Make webserver setting in conf ?
+# Nginx
+rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/nginx/sites-available /etc/nginx/sites-available
+
+# Apache2
+#rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/apache2 /sites-available /etc/apache2/sites-available
+
+# Syncing this folder mean both system need to very similar
+rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/apt/ /etc/apt/
 
 #
 ot-write-summary $0
