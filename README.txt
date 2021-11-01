@@ -33,7 +33,6 @@ Run:
 or build it :
     dpkg-deb --build --root-owner-group ot_redundancy deb
 
-This is a set of bash-scripts.
 
 Notes & caveats
 ===============

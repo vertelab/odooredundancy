@@ -55,7 +55,7 @@ then
 	echo "Exiting without making any changes..."
 	exit 1
 else
-	echo "User entered unknown input as" $REPLY1>&2
+	echo "User entered unknown input as" $REPLY 1>&2
 	echo "Exiting without making any changes..."
 	exit 1
 fi
