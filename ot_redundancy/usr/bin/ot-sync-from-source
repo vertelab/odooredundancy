@@ -16,41 +16,41 @@ echo "DB replication is made separately from this script and is excluded from th
 echo "Syncing installed apt packages ..."
 ot-apt-sync
 if [ $? -eq 0 ]; then
-    echo -e "${G}Success{U}"
+    echo -e "${G}Success${U}"
 else
-    echo -e "${R}Failure{U}"
+    echo -e "${R}Failure${U}"
 fi
 
 echo "Syncing installed pip3 packages ..."
 ot-pip-sync
 if [ $? -eq 0 ]; then
-    echo -e "${G}Success{U}"
+    echo -e "${G}Success${U}"
 else
-    echo -e "${R}Failure{U}"
+    echo -e "${R}Failure${U}"
 fi
 
 echo "Syncing project code ..."
 ot-project-sync
 if [ $? -eq 0 ]; then
-    echo -e "${G}Success{U}"
+    echo -e "${G}Success${U}"
 else
-    echo -e "${R}Failure{U}"
+    echo -e "${R}Failure${U}"
 fi
 
 echo "Syncing filestore ..."
 ot-attachments-sync
 if [ $? -eq 0 ]; then
-    echo -e "${G}Success{U}"
+    echo -e "${G}Success${U}"
 else
-    echo -e "${R}Failure{U}"
+    echo -e "${R}Failure${U}"
 fi
 
 echo "Syncing configuration ..."
 ot-conf-sync
 if [ $? -eq 0 ]; then
-    echo -e "${G}Success{U}"
+    echo -e "${G}Success${U}"
 else
-    echo -e "${R}Failure{U}"
+    echo -e "${R}Failure${U}"
 fi
 
 #service odoo restart  # No restart: Odoo disabled since it can't connect

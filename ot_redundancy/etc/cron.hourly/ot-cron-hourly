@@ -6,7 +6,7 @@
 ################################################################################
 
 # ot-project-sync # project sync should be done as a part of deployment procedure
-ot-attachment-sync # Keep attachments less than an hour old.
+ot-attachments-sync # Keep attachments less than an hour old.
 
 ## End
 exit 0 # 0 = success

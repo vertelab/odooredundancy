@@ -36,6 +36,8 @@ rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/nginx/sites-available /etc/nginx/si
 
 # Syncing this folder mean both system need to very similar
 rsync -va --delete $REMOTEODOO@$SYNCSRC:/etc/apt/ /etc/apt/
+apt-get update
+
 
 #
 ot-write-summary $0

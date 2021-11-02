@@ -8,10 +8,6 @@ else
   echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found"
   exit -1
 fi
-if [ ! $SYNCMODE = "on" ]; then
-  echo "Sync mode not set to 'on'" 1>&2
-  exit -1
-fi
 
 ## -------------------------------------------------------------------------- ##
 
@@ -32,7 +28,7 @@ usage(){
 
 if [ ! $# -gt 0 ]; then
     echo "Number of arguments need to be greater than 0. Exiting ..." 1>&2
-    usage
+    usage 1>&2
     exit 1
 fi
 

@@ -33,7 +33,7 @@ B='\033[0;34m'
 echo "Testing connection to source: $SYNCSRC"
 if ! $(ping -c 1 -W 5 $SYNCSRC > /dev/null); then
     echo -e "${R}Error:${U} Failure to ping $SYNCSRC" 1>&2
-    useage >$2
+    useage 1>$2
     exit 1
 else
     echo -e "${G}Success${U}"

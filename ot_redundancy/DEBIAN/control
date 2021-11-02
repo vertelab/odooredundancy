@@ -1,7 +1,7 @@
 Package: ot-redundancy
-Version: 0.5-2
+Version: 0.5-3
 Architecture: all
-Maintainer: Simon Rundstedt <simon.rundstedt@vertel.com>
+Maintainer: Simon Rundstedt <simon.rundstedt@vertel.se>
 Depends: bash, rsync, odoo
 Description: Sync scripts for an odoo installation
  A small script suite synking Odoo data from a source to a target machine as
