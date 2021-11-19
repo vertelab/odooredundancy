@@ -1,1 +1,2 @@
 /etc/odoo/ot-redundancy-sync.conf
+/etc/logrotate.d/ot-redundancy

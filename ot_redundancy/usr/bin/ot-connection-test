@@ -11,9 +11,13 @@ else
   echo "Configuration /etc/odoo/ot-redundancy-sync.conf not found" 1>&2
   exit -1
 fi
-if [ ! $SYNCMODE = "on" ]; then
-  echo "Sync mode not set to 'on'" 1>&2
-  exit -1
+#if [ ! $SYNCMODE = "on" ]; then
+#  echo "Sync mode not set to 'on'" 1>&2
+#  exit -1
+#fi
+
+if [ $UID -ne 0 ]; then
+    echo "Warning: Program not run as root and most likely won't be able to login to $SYNCSRC " 1>&2
 fi
 
 useage(){
@@ -30,7 +34,7 @@ G='\033[0;32m'
 B='\033[0;34m'
 ## -------------------------------------------------------------------------- ##
 
-echo "Testing connection to source: $SYNCSRC"
+echo "Test pinging source: $SYNCSRC"
 if ! $(ping -c 1 -W 5 $SYNCSRC > /dev/null); then
     echo -e "${R}Error:${U} Failure to ping $SYNCSRC" 1>&2
     useage 1>$2
